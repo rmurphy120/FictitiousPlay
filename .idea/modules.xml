@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PartiallyObservableMarkovGame.iml" filepath="$PROJECT_DIR$/PartiallyObservableMarkovGame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ComplexMarkovGameSolver.iml" filepath="$PROJECT_DIR$/ComplexMarkovGameSolver.iml" />
     </modules>
   </component>
 </project>
