@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eb3bab10-6cf1-4a23-a6aa-bd9465ce4e0b" name="Changes" comment="Finished Q planning">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" beforeDir="false" />
+    <list default="true" id="eb3bab10-6cf1-4a23-a6aa-bd9465ce4e0b" name="Changes" comment="Clean up">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ComplexMarkovGameSolver.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ComplexMarkovGameSolver.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Driver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Driver.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +30,9 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2sW3bQUVmfCvYCG7TWd7x2Biv9n" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -105,7 +105,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741488231627</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Clean up">
+      <option name="closed" value="true" />
+      <created>1750785413646</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1750785413646</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -134,7 +142,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Set up visuals and basic structure of the game" />
     <MESSAGE value="Finished Q planning" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finished Q planning" />
+    <MESSAGE value="Clean up" />
+    <option name="LAST_COMMIT_MESSAGE" value="Clean up" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
