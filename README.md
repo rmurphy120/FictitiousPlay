@@ -1,2 +1,2 @@
-# FictitiousPlay
-Solver for zero-sum markov game
+<h1>FictitiousPlay</h1>
+<p>Algorithm to solve for an exact Nash equilibrium of a zero-sum markov game. The <a href="https://en.wikipedia.org/wiki/Fictitious_play" target="_blank">wiki page</a> has some more information about theoretical guarantees. Set up for any k number of cars in a pursuit-evation game on an m by n board. Has support for multiple action spaces, including games with and without an action to do nothing.</p>
