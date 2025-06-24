@@ -25,20 +25,23 @@ public class Driver extends Application {
 
     public static final ImageView[] CARS = new ImageView[] {
             getImageView("redCar.png"),
-            getImageView("yellowCar.png"),
-            getImageView("blueCar.png")};
+            getImageView("yellowCar.png")/*,
+            getImageView("blueCar.png")*/};
     public static State state;
 
     public static void main(String[] args) {
         if (!SIM) {
             MarkovGame.qPlanning();
-            // MarkovGame.saveStatesAsObject("nash_equilibrium.ser");
-            MarkovGame.saveStatesAsObject("nash_equilibrium.csv");
+
+            MarkovGame.saveStatesAsObject("nash_equilibrium.ser");
+            // MarkovGame.saveStatesToCSV("nash_equilibrium.csv");
+            // MarkovGame.saveQIterationToCSV("Q_Iteration.csv");
         } else {
-            // MarkovGame.loadStatesAsObject("nash_equilibrium.ser");
-            MarkovGame.loadStatesAsObject("nash_equilibrium.csv");
+            MarkovGame.loadStatesAsObject("nash_equilibrium.ser");
+
             state = MarkovGame.states[State.getStateIndex(
-                    new int[] {1, 1, 0, 0, MarkovGame.WIDTH - 1, MarkovGame.HEIGHT - 1})];
+                    new int[] {/*1, 1, */0, 0, MarkovGame.WIDTH - 1, MarkovGame.HEIGHT - 1})];
+
             Application.launch(args);
         }
     }
@@ -53,6 +56,11 @@ public class Driver extends Application {
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             ActionSpace[] actions = new ActionSpace[MarkovGame.NUM_AGENTS];
 
+            String NEString = "State: (";
+            for (int each : state.state)
+                NEString += each + ",";
+            NEString = NEString.substring(0, NEString.length()-1) + "). ";
+
             for (int a = 0; a < MarkovGame.NUM_AGENTS; a++) {
                 actions[a] = MarkovGame.getMoveFromPolicy(state.NE[a]);
                 switch (actions[a]) {
@@ -61,7 +69,14 @@ public class Driver extends Application {
                     case LEFT -> CARS[a].setX(CARS[a].getX() - SIZE);
                     case RIGHT -> CARS[a].setX(CARS[a].getX() + SIZE);
                 }
+
+                NEString += "Agent " + a + "'s NE: (";
+                for (double each : state.NE[a])
+                    NEString += String.format("%.2f", each) + ",";
+                NEString = NEString.substring(0, NEString.length()-1) + "), ";
             }
+
+            System.out.println(NEString.substring(0, NEString.length()-2));
 
             state = state.transition(actions);
         }));
