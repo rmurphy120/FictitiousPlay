@@ -22,7 +22,7 @@ public class MarkovGame {
 
     public static State[] states;
 
-    public static void qPlanning() {
+    public static void manager() {
         states = State.getAllStates();
 
         long startTime = System.nanoTime();

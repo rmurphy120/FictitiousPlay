@@ -31,7 +31,7 @@ public class Driver extends Application {
 
     public static void main(String[] args) {
         if (!SIM) {
-            MarkovGame.qPlanning();
+            MarkovGame.manager();
 
             MarkovGame.saveStatesAsObject("nash_equilibrium.ser");
             // MarkovGame.saveStatesToCSV("nash_equilibrium.csv");
