@@ -27,20 +27,19 @@ public class Driver extends Application {
             getImageView("redCar.png"),
             getImageView("yellowCar.png")/*,
             getImageView("blueCar.png")*/};
+    public static final ImageView BALL = getImageView("soccerBall.png");
+
     public static State state;
 
     public static void main(String[] args) {
         if (!SIM) {
-            MarkovGame.manager();
+            NashSolver.manager();
 
-            MarkovGame.saveStatesAsObject("nash_equilibrium.ser");
+            NashSolver.saveStatesAsObject("nash_equilibrium.ser");
             // MarkovGame.saveStatesToCSV("nash_equilibrium.csv");
             // MarkovGame.saveQIterationToCSV("Q_Iteration.csv");
         } else {
-            MarkovGame.loadStatesAsObject("nash_equilibrium.ser");
-
-            state = MarkovGame.states[State.getStateIndex(
-                    new int[] {/*1, 1, */0, 0, MarkovGame.WIDTH - 1, MarkovGame.HEIGHT - 1})];
+            NashSolver.loadStatesAsObject("nash_equilibrium.ser");
 
             Application.launch(args);
         }
@@ -49,45 +48,28 @@ public class Driver extends Application {
     @Override
     public void start(Stage window) {
         Pane root = new Pane();
+        Timeline timeline;
 
-        createBoard(root);
-
-        // Create a timeline that updates every second
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            ActionSpace[] actions = new ActionSpace[MarkovGame.NUM_AGENTS];
-
-            String NEString = "State: (";
-            for (int each : state.state)
-                NEString += each + ",";
-            NEString = NEString.substring(0, NEString.length()-1) + "). ";
-
-            for (int a = 0; a < MarkovGame.NUM_AGENTS; a++) {
-                actions[a] = MarkovGame.getMoveFromPolicy(state.NE[a]);
-                switch (actions[a]) {
-                    case UP -> CARS[a].setY(CARS[a].getY() - SIZE);
-                    case DOWN -> CARS[a].setY(CARS[a].getY() + SIZE);
-                    case LEFT -> CARS[a].setX(CARS[a].getX() - SIZE);
-                    case RIGHT -> CARS[a].setX(CARS[a].getX() + SIZE);
-                }
-
-                NEString += "Agent " + a + "'s NE: (";
-                for (double each : state.NE[a])
-                    NEString += String.format("%.2f", each) + ",";
-                NEString = NEString.substring(0, NEString.length()-1) + "), ";
-            }
-
-            System.out.println(NEString.substring(0, NEString.length()-2));
-
-            state = state.transition(actions);
-        }));
+        if (State.GAME == 0) {
+            state = State.states[CarState.getStateIndex(
+                    new int[] {/*1, 1, */0, 0, State.WIDTH - 1, State.HEIGHT - 1})];
+            createCarBoard(root);
+            timeline = getCarTimeline();
+        }
+        else {
+            state = State.states[SoccerState.getStateIndex(new int[] {0, State.WIDTH / 2 - 1, State.HEIGHT / 2,
+                    State.WIDTH / 2 + 1, State.HEIGHT / 2 - 1})];
+            createSoccerBoard(root);
+            timeline = getSoccerTimeline(root);
+        }
 
         // Run timeline indefinitely
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
-        Scene scene = new Scene(root, MarkovGame.WIDTH * SIZE, MarkovGame.HEIGHT * SIZE);
+        Scene scene = new Scene(root, State.WIDTH * SIZE, State.HEIGHT * SIZE);
 
-        window.setTitle("Car Game");
+        window.setTitle("Markov Game");
         window.setScene(scene);
         window.show();
     }
@@ -106,12 +88,12 @@ public class Driver extends Application {
         throw new NoSuchElementException("Sprite not initialized");
     }
 
-    private void createBoard(Pane root) {
+    private static void createCarBoard(Pane root) {
         Group boardTiles = new Group();
 
         // Creates and draws the checkered grid based off of HEIGHT and WIDTH
-        for (int y = 0; y < MarkovGame.HEIGHT; y++)
-            for (int x = 0; x < MarkovGame.WIDTH; x++) {
+        for (int y = 0; y < State.HEIGHT; y++)
+            for (int x = 0; x < State.WIDTH; x++) {
                 Rectangle tile = new Rectangle(x * SIZE, y * SIZE, SIZE, SIZE);
 
                 tile.setFill((x + y) % 2 == 0 ? Color.BISQUE : Color.SADDLEBROWN);
@@ -124,12 +106,128 @@ public class Driver extends Application {
         root.getChildren().add(boardTiles);
 
         // Draws the cars based off the state
-        for (int a = 0; a < MarkovGame.NUM_AGENTS; a++) {
+        for (int a = 0; a < State.NUM_AGENTS; a++) {
             CARS[a].setX(state.state[2*a] * SIZE);
             CARS[a].setY(state.state[2*a+1] * SIZE);
             CARS[a].setFitWidth(SIZE);
             CARS[a].setFitHeight(SIZE);
             root.getChildren().add(CARS[a]);
         }
+    }
+
+    private static Timeline getCarTimeline() {
+        // Create a timeline that updates every second
+        return new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            // Get actions
+            ActionSpace[] actions = new ActionSpace[State.NUM_AGENTS];
+            for (int a = 0; a < State.NUM_AGENTS; a++)
+                actions[a] = NashSolver.getMoveFromPolicy(state.NE[a]);
+
+            // Move cars
+            state = state.transition(actions);
+            for (int a = 0; a < State.NUM_AGENTS; a++) {
+                CARS[a].setX(state.state[2 * a] * SIZE);
+                CARS[a].setY(state.state[2 * a + 1] * SIZE);
+            }
+
+            // Output to console a log of the states and the policies
+            String NEString = "State: (";
+            for (int each : state.state)
+                NEString += each + ",";
+            NEString = NEString.substring(0, NEString.length()-1) + "). ";
+
+            for (int a = 0; a < State.NUM_AGENTS; a++) {
+                NEString += "Agent " + a + "'s NE: (";
+                for (double each : state.NE[a])
+                    NEString += String.format("%.2f", each) + ",";
+                NEString = NEString.substring(0, NEString.length()-1) + "), ";
+            }
+
+            System.out.println(NEString.substring(0, NEString.length()-2));
+        }));
+    }
+
+    private static void createSoccerBoard(Pane root) {
+        Group boardTiles = new Group();
+        int[] goalYPos = new int[]{State.HEIGHT / 2 - 1, State.HEIGHT / 2};
+
+        // Creates and draws the checkered grid based off of HEIGHT and WIDTH
+        for (int y = 0; y < State.HEIGHT; y++)
+            for (int x = 0; x < State.WIDTH; x++) {
+                Rectangle tile = new Rectangle(x * SIZE, y * SIZE, SIZE, SIZE);
+
+                if (x == 0 || x == State.WIDTH-1)
+                    if (y == goalYPos[0] || y == goalYPos[1])
+                        tile.setFill(Color.GHOSTWHITE);
+                    else
+                        tile.setFill(Color.BLACK);
+                else
+                    tile.setFill((x + y) % 2 == 0 ? Color.GREEN : Color.YELLOWGREEN);
+
+                boardTiles.getChildren().add(tile);
+            }
+
+        root.getChildren().add(boardTiles);
+
+        // Draws the cars based off the state
+        for (int a = 0; a < State.NUM_AGENTS; a++) {
+            CARS[a].setX(state.state[2*a+1] * SIZE);
+            CARS[a].setY(state.state[2*a+2] * SIZE);
+            CARS[a].setFitWidth(SIZE);
+            CARS[a].setFitHeight(SIZE);
+            root.getChildren().add(CARS[a]);
+        }
+
+        // Draws the ball with the correct player
+        BALL.setX(state.state[2 * state.state[0] + 1] * SIZE);
+        BALL.setY(state.state[2 * state.state[0] + 2] * SIZE);
+        BALL.setFitWidth(SIZE / 2);
+        BALL.setFitHeight(SIZE / 2);
+        root.getChildren().add(BALL);
+    }
+
+    private static Timeline getSoccerTimeline(Pane root) {
+        // Create a timeline that updates every second
+        return new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            // Get actions
+            ActionSpace[] actions = new ActionSpace[State.NUM_AGENTS];
+            for (int a = 0; a < State.NUM_AGENTS; a++)
+                actions[a] = NashSolver.getMoveFromPolicy(state.NE[a]);
+
+            // Move cars
+            state = state.transition(actions);
+
+            // Check if a goal was scored
+            if (Math.abs(state.reward[0]) == 10) {
+                System.out.println((state.reward[0] > 0 ? "Red" : "Yellow") + " scored");
+                root.getChildren().clear();
+                state = State.states[SoccerState.getStateIndex(new int[] {0, State.WIDTH / 2 - 1, State.HEIGHT / 2,
+                        State.WIDTH / 2 + 1, State.HEIGHT / 2 - 1})];
+                createSoccerBoard(root);
+                return;
+            }
+
+            for (int a = 0; a < State.NUM_AGENTS; a++) {
+                CARS[a].setX(state.state[2 * a + 1] * SIZE);
+                CARS[a].setY(state.state[2 * a + 2] * SIZE);
+            }
+            BALL.setX(state.state[2 * state.state[0] + 1] * SIZE);
+            BALL.setY(state.state[2 * state.state[0] + 2] * SIZE);
+
+            // Output to console a log of the states and the policies
+            String NEString = "State: (";
+            for (int each : state.state)
+                NEString += each + ",";
+            NEString = NEString.substring(0, NEString.length()-1) + "). ";
+
+            for (int a = 0; a < State.NUM_AGENTS; a++) {
+                NEString += "Agent " + a + "'s NE: (";
+                for (double each : state.NE[a])
+                    NEString += String.format("%.2f", each) + ",";
+                NEString = NEString.substring(0, NEString.length()-1) + "), ";
+            }
+
+            System.out.println(NEString.substring(0, NEString.length()-2));
+        }));
     }
 }

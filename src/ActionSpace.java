@@ -9,7 +9,7 @@ public enum ActionSpace {
 
     private static ActionSpace[][] calculateAllActions() {
         ActionSpace[][] allActions = new ActionSpace[
-                (int)Math.pow(ActionSpace.values().length, MarkovGame.NUM_AGENTS)][MarkovGame.NUM_AGENTS];
+                (int)Math.pow(ActionSpace.values().length, State.NUM_AGENTS)][State.NUM_AGENTS];
 
         for (int i = 0; i < allActions.length; i++)
             allActions[i] = indexToActions(i);
@@ -18,9 +18,9 @@ public enum ActionSpace {
     }
 
     private static ActionSpace[] indexToActions(int index) {
-        ActionSpace[] actions = new ActionSpace[MarkovGame.NUM_AGENTS];
+        ActionSpace[] actions = new ActionSpace[State.NUM_AGENTS];
 
-        for (int a = 0; a < MarkovGame.NUM_AGENTS; a++) {
+        for (int a = 0; a < State.NUM_AGENTS; a++) {
             actions[a] = ActionSpace.values()[index % values().length];
             index /= values().length;
         }
