@@ -1,3 +1,11 @@
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Class which defines the car game. Built for n players. Best when width and height is odd.
+ *
+ * Defines field state as (car 1's x, car 1's y, car 2's x, car 2's y, ...)
+ */
 public class CarState extends State {
     public static State[] getAllStates() {
         CarState[] states = new CarState[(int)Math.pow(WIDTH * HEIGHT, NUM_AGENTS)];
@@ -50,8 +58,10 @@ public class CarState extends State {
     }
 
 
-    public State transition(ActionSpace[] actions) {
+    public Set<State> transition(ActionSpace[] actions) {
         int[] newState = state.clone();
+        Set<State> nextStates = new HashSet<>();
+
         for (int a = 0; a < NUM_AGENTS; a++)
             switch (actions[a]) {
                 case LEFT -> newState[2*a]--;
@@ -64,9 +74,12 @@ public class CarState extends State {
         for (int a = 0; a < NUM_AGENTS; a++)
             if (newState[2*a] < 0 || newState[2*a] >= WIDTH ||
                     newState[2*a+1] < 0 || newState[2*a+1] >= HEIGHT)
-                return new CarState(newState, true);
+                nextStates.add(new CarState(newState, true));
 
-        return states[getStateIndex(newState)];
+        if (nextStates.isEmpty())
+            nextStates.add(states[getStateIndex(newState)]);
+
+        return nextStates;
     }
 
     public void calculateReward() {
@@ -132,6 +145,4 @@ public class CarState extends State {
         // reward[0] = -2 * reward[1];
         reward[0] = -reward[1];
     }
-
-
 }

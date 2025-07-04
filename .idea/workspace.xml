@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eb3bab10-6cf1-4a23-a6aa-bd9465ce4e0b" name="Changes" comment="Added blue car">
+    <list default="true" id="eb3bab10-6cf1-4a23-a6aa-bd9465ce4e0b" name="Changes" comment="Added soccer game, cleaned/refactored much code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nash_equilibrium.ser" beforeDir="false" afterPath="$PROJECT_DIR$/nash_equilibrium.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ActionSpace.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ActionSpace.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CarState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CarState.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Driver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Driver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MarkovGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/NashSolver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/State.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CarState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/NashSolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/NashSolver.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,7 +140,23 @@
       <option name="project" value="LOCAL" />
       <updated>1750786962554</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Added soccer game, cleaned/refactored much code">
+      <option name="closed" value="true" />
+      <created>1751598521215</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1751598521215</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Added soccer game, cleaned/refactored much code">
+      <option name="closed" value="true" />
+      <created>1751598682811</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1751598682811</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -173,7 +188,8 @@
     <MESSAGE value="Clean up" />
     <MESSAGE value="Add rest of project" />
     <MESSAGE value="Added blue car" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added blue car" />
+    <MESSAGE value="Added soccer game, cleaned/refactored much code" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added soccer game, cleaned/refactored much code" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -181,10 +197,6 @@
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.lang.ArrayIndexOutOfBoundsException" package="java.lang" />
           <option name="timeStamp" value="35" />
-        </breakpoint>
-        <breakpoint enabled="true" type="java-exception">
-          <properties class="java.lang.NullPointerException" package="java.lang" />
-          <option name="timeStamp" value="37" />
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>

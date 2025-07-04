@@ -3,20 +3,19 @@ import java.util.Random;
 
 public class NashSolver {
     // Hyperparameters for fictitious play
-    public static final double DISCOUNT_FACTOR = 0.9;
-    private static final int NUM_FORGET = 1000;
-    private static final double CONVERGENCE_BOUND = 0.001;
-    private static final int LENGTH_TO_UPDATE_VALS = 50;
+    public static final double DISCOUNT_FACTOR = 0.95;
+    private static final int NUM_FORGET = 50;
+    private static final double CONVERGENCE_BOUND = 0.01;
+    // Must be > 1
+    private static final int LENGTH_TO_UPDATE_VALS = 4;
 
     public static int numEpisodes;
     private static final Random r = new Random();
 
-    // private static final List<double[]> avgQLossPerIteration = new ArrayList<>();
-
-
 
     public static void manager() {
         long startTime = System.nanoTime();
+
         fictitiousPlay();
 
         System.out.println("Converged after " + numEpisodes + " episodes and "  +
@@ -37,15 +36,17 @@ public class NashSolver {
 
         boolean hasConverged = false;
 
-        for (numEpisodes = ActionSpace.values().length; !hasConverged && numEpisodes < 25000; numEpisodes++) {
+        for (numEpisodes = ActionSpace.values().length; !hasConverged; numEpisodes++) {
             // Only check convergence when Q table is updated
             hasConverged = numEpisodes % LENGTH_TO_UPDATE_VALS == 1;
 
+            // Best response
             for (State each : State.states) {
                 each.updatePastActions();
                 each.updateExpectedValues();
             }
 
+            // Update QTable
             for (State each : State.states) {
                 avgQDiff = each.updateQTable();
                 if (avgQDiff > CONVERGENCE_BOUND)
@@ -54,27 +55,29 @@ public class NashSolver {
                     avgAvgQDiff += avgQDiff;
             }
 
-            if (numEpisodes % LENGTH_TO_UPDATE_VALS == 0) {
-                // avgQLossPerIteration.add(avgQLoss);
+            // Update target QTable
+            if (numEpisodes % LENGTH_TO_UPDATE_VALS == 0)
                 for (State each : State.states)
                     each.updateTargetQTable();
-            }
 
+            // Code to help forget first NUM_FORGET actions (To eliminate early noise)
             if (numEpisodes + 1 == NUM_FORGET)
                 for (State each : State.states)
                     each.initializeFirstActions();
 
-            if (numEpisodes % 500 == 0) {
+            // Progress output
+            if (numEpisodes % 250 == 0) {
                 System.out.println("Episode " + numEpisodes + ". Avg state diff: " +
-                        avgAvgQDiff / State.states.length / 500 * LENGTH_TO_UPDATE_VALS);
+                        avgAvgQDiff / State.states.length / 250 * LENGTH_TO_UPDATE_VALS);
                 avgAvgQDiff = 0;
             }
         }
 
+        // Forget first NUM_FORGET actions (To eliminate early noise)
         for (State each : State.states)
             each.forgetFirstActions();
 
-        numEpisodes *= 1 - NUM_FORGET / (double)numEpisodes;
+        numEpisodes -= NUM_FORGET;
     }
 
     public static ActionSpace getMoveFromPolicy(double[] policy) {

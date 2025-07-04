@@ -28,19 +28,18 @@ public class Driver extends Application {
             getImageView("yellowCar.png")/*,
             getImageView("blueCar.png")*/};
     public static final ImageView BALL = getImageView("soccerBall.png");
+    private static final Random r = new Random();
 
     public static State state;
 
     public static void main(String[] args) {
         if (!SIM) {
             NashSolver.manager();
-
             NashSolver.saveStatesAsObject("nash_equilibrium.ser");
             // MarkovGame.saveStatesToCSV("nash_equilibrium.csv");
             // MarkovGame.saveQIterationToCSV("Q_Iteration.csv");
         } else {
             NashSolver.loadStatesAsObject("nash_equilibrium.ser");
-
             Application.launch(args);
         }
     }
@@ -124,7 +123,13 @@ public class Driver extends Application {
                 actions[a] = NashSolver.getMoveFromPolicy(state.NE[a]);
 
             // Move cars
-            state = state.transition(actions);
+            Set<State> possibleStates = state.transition(actions);
+            state = possibleStates
+                    .stream()
+                    .skip(r.nextInt(possibleStates.size()))
+                    .findFirst()
+                    .orElse(null);
+
             for (int a = 0; a < State.NUM_AGENTS; a++) {
                 CARS[a].setX(state.state[2 * a] * SIZE);
                 CARS[a].setY(state.state[2 * a + 1] * SIZE);
@@ -194,8 +199,13 @@ public class Driver extends Application {
             for (int a = 0; a < State.NUM_AGENTS; a++)
                 actions[a] = NashSolver.getMoveFromPolicy(state.NE[a]);
 
-            // Move cars
-            state = state.transition(actions);
+            // Get state
+            Set<State> possibleStates = state.transition(actions);
+            state = possibleStates
+                    .stream()
+                    .skip(r.nextInt(possibleStates.size()))
+                    .findFirst()
+                    .orElse(null);
 
             // Check if a goal was scored
             if (Math.abs(state.reward[0]) == 10) {
@@ -207,6 +217,7 @@ public class Driver extends Application {
                 return;
             }
 
+            // Move cars
             for (int a = 0; a < State.NUM_AGENTS; a++) {
                 CARS[a].setX(state.state[2 * a + 1] * SIZE);
                 CARS[a].setY(state.state[2 * a + 2] * SIZE);
