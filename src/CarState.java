@@ -107,18 +107,18 @@ public class CarState extends State {
                 reward[1] = -100;
             }
             /*if (isOffMap[0] && isOffMap[1] && isOffMap[2]) {
-                reward[0] = -2000;
-                reward[1] = -1000;
-                reward[2] = -1000;
+                reward[0] = -200;
+                reward[1] = -100;
+                reward[2] = -100;
             } else if (isOffMap[0]) {
-                reward[0] = -2000;
-                reward[1] = 1000;
-                reward[2] = 1000;
+                reward[0] = -200;
+                reward[1] = 100;
+                reward[2] = 100;
             } else {
                 // One of the evaders is off the map
-                reward[0] = 2000;
-                reward[1] = -1000;
-                reward[2] = -1000;
+                reward[0] = 200;
+                reward[1] = -100;
+                reward[2] = -100;
             }*/
 
             return;

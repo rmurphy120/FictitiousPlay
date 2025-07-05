@@ -4,7 +4,7 @@ import java.util.Random;
 public class NashSolver {
     // Hyperparameters for fictitious play
     public static final double DISCOUNT_FACTOR = 0.95;
-    private static final int NUM_FORGET = 50;
+    private static final int NUM_FORGET = 30;
     private static final double CONVERGENCE_BOUND = 0.01;
     // Must be > 1
     private static final int LENGTH_TO_UPDATE_VALS = 4;

@@ -25,8 +25,8 @@ public class Driver extends Application {
 
     public static final ImageView[] CARS = new ImageView[] {
             getImageView("redCar.png"),
-            getImageView("yellowCar.png")/*,
-            getImageView("blueCar.png")*/};
+            getImageView("yellowCar.png"),
+            getImageView("blueCar.png")};
     public static final ImageView BALL = getImageView("soccerBall.png");
     private static final Random r = new Random();
 
