@@ -1,5 +1,5 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class which defines the car game. Built for n players. Best when width and height is odd.
@@ -58,9 +58,9 @@ public class CarState extends State {
     }
 
 
-    public Set<State> transition(ActionSpace[] actions) {
+    public Map<State, Double> transition(ActionSpace[] actions) {
         int[] newState = state.clone();
-        Set<State> nextStates = new HashSet<>();
+        Map<State, Double> nextStates = new HashMap<>();
 
         for (int a = 0; a < NUM_AGENTS; a++)
             switch (actions[a]) {
@@ -74,10 +74,10 @@ public class CarState extends State {
         for (int a = 0; a < NUM_AGENTS; a++)
             if (newState[2*a] < 0 || newState[2*a] >= WIDTH ||
                     newState[2*a+1] < 0 || newState[2*a+1] >= HEIGHT)
-                nextStates.add(new CarState(newState, true));
+                nextStates.put(new CarState(newState, true), 1.);
 
         if (nextStates.isEmpty())
-            nextStates.add(states[getStateIndex(newState)]);
+            nextStates.put(states[getStateIndex(newState)], 1.);
 
         return nextStates;
     }

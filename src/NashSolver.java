@@ -3,9 +3,9 @@ import java.util.Random;
 
 public class NashSolver {
     // Hyperparameters for fictitious play
-    public static final double DISCOUNT_FACTOR = 0.95;
-    private static final int NUM_FORGET = 30;
-    private static final double CONVERGENCE_BOUND = 0.01;
+    public static final double DISCOUNT_FACTOR = 0.9;
+    private static final int NUM_FORGET = 300;
+    private static final double CONVERGENCE_BOUND = 0.005;
     // Must be > 1
     private static final int LENGTH_TO_UPDATE_VALS = 4;
 
@@ -113,23 +113,22 @@ public class NashSolver {
     // Method to save states to CSV
     public static void saveStatesToCSV(String filename) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            String header = "X_1,Y_1,X_2,Y_2:";
-            for (int a = 0; a < State.NUM_AGENTS; a++)
-                header += "U_" + a + "," + "D_" + a + "," + "L_" + a + "," + "R_" + a + "," /*+ "S_" + a + ","*/;
-
-            writer.write(header.substring(0, header.length()-1));
+            String header = "X1,Y1,X2,Y2,U1,D1,L1,R1,U2,D2,L2,R2";
+            writer.write(header);
             writer.newLine();
 
             for (State s : State.states) {
                 StringBuilder line = new StringBuilder();
 
                 // Append state values
-                line.append(s.state[1] + "," + s.state[0] + "," + s.state[3] + "," + s.state[2] + ":");
+                for (int val : s.state)
+                    line.append(val).append(",");
 
                 // Append NE values
-                for (double[] row : s.NE)
-                    for (double value : row)
-                        line.append(value).append(",");
+                if (!s.offBoard)
+                    for (double[] row : s.NE)
+                        for (double value : row)
+                            line.append(value).append(",");
 
                 // Remove trailing comma and write to file
                 writer.write(line.substring(0, line.length() - 1));

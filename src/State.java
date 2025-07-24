@@ -3,7 +3,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public abstract class State implements Serializable {
     @Serial
@@ -12,18 +11,21 @@ public abstract class State implements Serializable {
     public static final int HEIGHT = 4;
     public static final int WIDTH = 7;
     public static final int NUM_AGENTS = 2;
+
     public static State[] states = GAME == 0 ? CarState.getAllStates() : SoccerState.getAllStates();
+
     public int[] state;
     protected boolean offBoard;
     public double[][] NE;
     public double[] reward;
+
     private Map<ActionSpace[], double[]> QTable;
     private Map<ActionSpace[], double[]> TargetQTable;
     protected double[] expectedValues;
     private int[][] pastActions;
     private int[][] firstActions;
 
-    public abstract Set<State> transition(ActionSpace[] var1);
+    public abstract Map<State, Double> transition(ActionSpace[] var1);
 
     public abstract void calculateReward();
 
@@ -33,12 +35,12 @@ public abstract class State implements Serializable {
 
         QTable = new HashMap<>();
         for (ActionSpace[] each : ActionSpace.ALL_ACTIONS) {
-            Set<State> nextStates = transition(each);
+            Map<State, Double> nextStates = transition(each);
 
             double[] initValues = new double[NUM_AGENTS];
-            for (State nextState : nextStates)
+            for (State nextState : nextStates.keySet())
                 for (int a = 0; a < NUM_AGENTS; a++)
-                    initValues[a] += (double) (1 / nextStates.size()) * nextState.reward[a];
+                    initValues[a] += nextStates.get(nextState) * nextState.reward[a];
 
             QTable.put(each, initValues);
         }
@@ -87,12 +89,12 @@ public abstract class State implements Serializable {
 
         double avgDifference = 0;
         for (ActionSpace[] each : ActionSpace.ALL_ACTIONS) {
-            Set<State> nextStates = transition(each);
+            Map<State, Double> nextStates = transition(each);
 
             double[] newValues = new double[NUM_AGENTS];
-            for (State nextState : nextStates)
+            for (State nextState : nextStates.keySet())
                 for (int a = 0; a < NUM_AGENTS; a++)
-                    newValues[a] += (double) (1 / nextStates.size()) * nextState.expectedValues[a];
+                    newValues[a] += nextStates.get(nextState) * nextState.expectedValues[a];
 
             double[] oldValues = QTable.replace(each, newValues);
 
@@ -172,7 +174,7 @@ public abstract class State implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return Arrays.equals(state, ((State) o).state);
+        return o instanceof State ? Arrays.equals(state, ((State) o).state) : false;
     }
 
     @Override

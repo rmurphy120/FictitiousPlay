@@ -36,8 +36,8 @@ public class Driver extends Application {
         if (!SIM) {
             NashSolver.manager();
             NashSolver.saveStatesAsObject("nash_equilibrium.ser");
-            // MarkovGame.saveStatesToCSV("nash_equilibrium.csv");
-            // MarkovGame.saveQIterationToCSV("Q_Iteration.csv");
+            NashSolver.saveStatesToCSV("C:\\Users\\rynom\\OneDrive - UW-Madison\\Desktop\\Java Projects\\NashEquilibriumChecker\\nash_equilibrium.csv");
+            // NashSolver.saveQIterationToCSV("Q_Iteration.csv");
         } else {
             NashSolver.loadStatesAsObject("nash_equilibrium.ser");
             Application.launch(args);
@@ -123,12 +123,7 @@ public class Driver extends Application {
                 actions[a] = NashSolver.getMoveFromPolicy(state.NE[a]);
 
             // Move cars
-            Set<State> possibleStates = state.transition(actions);
-            state = possibleStates
-                    .stream()
-                    .skip(r.nextInt(possibleStates.size()))
-                    .findFirst()
-                    .orElse(null);
+            state = (State) state.transition(actions).keySet().toArray()[0];
 
             for (int a = 0; a < State.NUM_AGENTS; a++) {
                 CARS[a].setX(state.state[2 * a] * SIZE);
@@ -200,12 +195,15 @@ public class Driver extends Application {
                 actions[a] = NashSolver.getMoveFromPolicy(state.NE[a]);
 
             // Get state
-            Set<State> possibleStates = state.transition(actions);
-            state = possibleStates
-                    .stream()
-                    .skip(r.nextInt(possibleStates.size()))
-                    .findFirst()
-                    .orElse(null);
+            Map<State, Double> possibleStates = state.transition(actions);
+            double choice = r.nextDouble();
+            for (State each: possibleStates.keySet()) {
+                choice -= possibleStates.get(each);
+                if (choice <= 0) {
+                    state = each;
+                    break;
+                }
+            }
 
             // Check if a goal was scored
             if (Math.abs(state.reward[0]) == 10) {
@@ -214,7 +212,6 @@ public class Driver extends Application {
                 state = State.states[SoccerState.getStateIndex(new int[] {0, State.WIDTH / 2 - 1, State.HEIGHT / 2,
                         State.WIDTH / 2 + 1, State.HEIGHT / 2 - 1})];
                 createSoccerBoard(root);
-                return;
             }
 
             // Move cars
